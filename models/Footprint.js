@@ -8,7 +8,7 @@ const footprintSchema = new mongoose.Schema({
     total_carbon_emitted_gCO2e: Number,
       services: [
         {
-          containerId: { type: mongoose.Schema.Types.ObjectId, ref: "Container" },
+          serviceId: { type: mongoose.Schema.Types.ObjectId, ref: "Container Volume Bucket" },
           name: String,
           energy_consumed_kWh: Number,
           carbon_emitted_gCO2e: Number,
