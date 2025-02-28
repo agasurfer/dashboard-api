@@ -29,4 +29,4 @@ router.use(basePath.volumes, volumesRoutes);
 router.use(basePath.buckets, bucketsRoutes);
 router.use(basePath.alerts, alertsRoutes);
 
-module.exports = router
+module.exports = router;

@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 
 const containerSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  status: String,
-  created_at: Date,
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    footprintId: {type: mongoose.Schema.Types.ObjectId, ref: 'Footprint'},
+    name: String,
+    image: String,
+    status: String,
+    created_at: { type: Date, default: Date.now },
 });
+
 const Container = mongoose.model("Container", containerSchema);
 
-module.export = Container
+module.exports = Container
