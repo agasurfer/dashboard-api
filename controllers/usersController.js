@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require("../models/User");
 const Container = require('../models/Container');
 const Footprint = require('../models/Footprint');
