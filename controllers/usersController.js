@@ -62,7 +62,7 @@ const getUserFootprints = async (req, res) => {
 
         
         const footprint = await Footprint.aggregate([
-            { $match: { userId: mongoose.Types.ObjectId(user) } }, 
+            { $match: { userId:  user } }, 
             { $unwind: "$services" }, // unwinds services
             {
                 $group: {
