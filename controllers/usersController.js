@@ -61,18 +61,55 @@ const getUserFootprints = async (req, res) => {
         }
 
         
-        const footprint = await Footprint.aggregate([
-            { $match: { userId:  user } }, 
+        /* const footprint = await Footprint.aggregate([
+            { $match: { userId:  new mongoose.Types.ObjectId(user) } }, 
             { $unwind: "$services" }, // unwinds services
             {
                 $group: {
                     _id: "$userId",
                     total_energy_consumed_kWh: { $sum: "$services.energy_consumed_kWh" },
+                    carbon_intensity_gCO2e_per_kWh: "$carbon_intensity_gCO2e_per_kWh",
                     total_carbon_emitted_gCO2e: { $sum: "$services.carbon_emitted_gCO2e" },
+                    total_energy_saved_compared_to_standard_kWh: { $sum: "$services.energy_saved_kWh" },
+                    total_carbon_saved_compared_to_standard_gCO2e: { $sum: "$services.carbon_saved_gCO2e" },
+                    footprint_saved_percentage: "$footprint_saved_percentage",
                     services: { $push: "$services" } // regroup
                 }
             }
-        ]);
+        ]); */
+
+        const footprint = await Footprint.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(user) } },
+    // Capture les champs au niveau document avant de dérouler les services
+    { 
+        $project: {
+            userId: 1,
+            carbon_intensity_gCO2e_per_kWh: 1,
+            footprint_saved_percentage: 1,
+            services: 1
+        }
+    },
+    // Faire une copie de ces valeurs pour les utiliser après le unwinding
+    {
+        $addFields: {
+            _carbon_intensity: "$carbon_intensity_gCO2e_per_kWh",
+            _footprint_saved_percentage: "$footprint_saved_percentage"
+        }
+    },
+    { $unwind: "$services" },
+    {
+        $group: {
+            _id: "$userId",
+            carbon_intensity_gCO2e_per_kWh: { $first: "$_carbon_intensity" },
+            footprint_saved_percentage: { $first: "$_footprint_saved_percentage" },
+            total_energy_consumed_kWh: { $sum: "$services.energy_consumed_kWh" },
+            total_carbon_emitted_gCO2e: { $sum: "$services.carbon_emitted_gCO2e" },
+            total_energy_saved_compared_to_standard_kWh: { $sum: "$services.energy_saved_kWh" },
+            total_carbon_saved_compared_to_standard_gCO2e: { $sum: "$services.carbon_saved_gCO2e" },
+            services: { $push: "$services" }
+        }
+    }
+]);
 
         
         if (!footprint.length) {
