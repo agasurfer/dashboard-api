@@ -9,7 +9,8 @@ router.get("/:id/containers", usersController.getUserContainers);
 router.get("/:id/footprints", usersController.getUserFootprints);
 router.get("/:id/buckets", usersController.getUserBuckets);
 router.get("/:id/volumes", usersController.getUserVolumes);
-router.get("/:id/alerts", usersController.getUserAlerts)
+router.get("/:id/alerts", usersController.getUserAlerts);
+
 
 
 module.exports = router;

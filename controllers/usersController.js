@@ -5,6 +5,7 @@ const Footprint = require('../models/Footprint');
 const Bucket = require('../models/Bucket');
 const Volume = require('../models/Volume');
 const Alert = require('../models/Alert');
+const ObjectModel = require('../models/Object');
 
 
 // Get all users
@@ -60,23 +61,6 @@ const getUserFootprints = async (req, res) => {
             return res.status(404).json({ message: `User ${user} not found` });
         }
 
-        
-        /* const footprint = await Footprint.aggregate([
-            { $match: { userId:  new mongoose.Types.ObjectId(user) } }, 
-            { $unwind: "$services" }, // unwinds services
-            {
-                $group: {
-                    _id: "$userId",
-                    total_energy_consumed_kWh: { $sum: "$services.energy_consumed_kWh" },
-                    carbon_intensity_gCO2e_per_kWh: "$carbon_intensity_gCO2e_per_kWh",
-                    total_carbon_emitted_gCO2e: { $sum: "$services.carbon_emitted_gCO2e" },
-                    total_energy_saved_compared_to_standard_kWh: { $sum: "$services.energy_saved_kWh" },
-                    total_carbon_saved_compared_to_standard_gCO2e: { $sum: "$services.carbon_saved_gCO2e" },
-                    footprint_saved_percentage: "$footprint_saved_percentage",
-                    services: { $push: "$services" } // regroup
-                }
-            }
-        ]); */
 
         const footprint = await Footprint.aggregate([
     { $match: { userId: new mongoose.Types.ObjectId(user) } },
@@ -137,8 +121,8 @@ const getUserBuckets = async (req, res) => {
             return res.status(404).json({ message: `User ${user} not found` });
         }
 
-            const buckets = await Bucket.find({ userId: user}).populate("volumes")
-            if (!buckets) {
+            const buckets = await Bucket.find({ userId: user}).populate("objects").lean()
+            if (!buckets || buckets.length === 0) {
                 return res.status(404).json({ message: "No buckets found" });
             }
             res.status(200).json(buckets);
@@ -158,7 +142,7 @@ const getUserVolumes = async (req, res) => {
             return res.status(404).json({ message: `User ${user} not found` });
         }
 
-            const volumes = await Volume.find({ userId: user}).populate("bucketId containerId");
+            const volumes = await Volume.find({ userId: user}).populate("containerId");
             if (!volumes) {
                 return res.status(404).json({ message: "No volumes found" });
             }
@@ -186,6 +170,8 @@ const getUserAlerts = async (req, res) => {
         res.status(500).json({ message: err.message })
     }
 }
+
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -193,5 +179,6 @@ module.exports = {
     getUserFootprints,
     getUserBuckets,
     getUserVolumes,
-    getUserAlerts
+    getUserAlerts,
+
 }
