@@ -7,6 +7,7 @@ const containerSchema = new mongoose.Schema({
     image: String,
     status: String,
     created_at: { type: Date, default: Date.now },
+    service_type: String,
 });
 
 const Container = mongoose.model("Container", containerSchema);

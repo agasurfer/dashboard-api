@@ -1,16 +1,3 @@
-/* const mongoose = require('mongoose');
-
-const bucketSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    volumes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volume" }],
-    name: String,
-    created_at: { type: Date, default: Date.now },
-});
-
-const Bucket = mongoose.model("Bucket", bucketSchema);
-
-module.exports = Bucket */
-
 const mongoose = require('mongoose');
 
 const bucketSchema = new mongoose.Schema({
@@ -18,6 +5,7 @@ const bucketSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     objects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Object" }], // Liste des objets stockés
     max_capacity_gb: { type: Number, required: true }, // Capacité maximale du bucket
+    service_type: String,
     created_at: { type: Date, default: Date.now }
 }, { timestamps: true });
 
