@@ -17,6 +17,7 @@ const footprintSchema = new mongoose.Schema({
           carbon_emitted_gCO2e: Number,
           energy_saved_kWh: Number,
           carbon_saved_gCO2e: Number,
+          service_type: String,
     },
   ],
 });
